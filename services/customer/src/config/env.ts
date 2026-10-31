@@ -14,6 +14,18 @@ const envSchema = z.object({
     .default(3001),
 
   DATABASE_URL: z.string().url(),
+
+  RABBITMQ_URL: z
+    .string()
+    .url()
+    .refine(
+      (url) => url.startsWith("amqp://") || url.startsWith("amqps://"),
+      {
+        message: "RABBITMQ_URL must start with amqp:// or amqps://",
+      }
+    ),
+
+  RABBITMQ_EXCHANGE: z.string().min(1),
 });
 
 const parsedEnv = envSchema.safeParse(process.env);
