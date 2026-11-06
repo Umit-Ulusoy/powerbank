@@ -13,6 +13,10 @@ const envSchema = z.object({
     .max(65535)
     .default(3001),
 
+  LOG_LEVEL: z
+    .enum(["fatal", "error", "warn", "info", "debug", "trace"])
+    .default("info"),
+
   DATABASE_URL: z.string().url(),
 
   RABBITMQ_URL: z

@@ -4,6 +4,7 @@ import { createServer, type Server } from "node:http";
 
 import app from "./app.js";
 import { env } from "./config/env.js";
+import { logger } from "./lib/logger.js";
 import { prisma } from "./lib/prisma.js";
 import {
   channelManager,
@@ -48,7 +49,10 @@ async function startServer(): Promise<void> {
     });
   });
 
-  console.info(`Customer service listening on port ${env.PORT}`);
+  logger.info({
+    msg: "Customer service listening",
+    port: env.PORT,
+  });
 }
 
 async function cleanup(): Promise<void> {
@@ -92,9 +96,13 @@ async function cleanup(): Promise<void> {
     cleanupTasks.map(async (task) => {
       try {
         await task.execute();
-        console.info(`${task.name} cleanup completed`);
+        logger.info({ msg: "Cleanup completed", task: task.name });
       } catch (error) {
-        console.error(`${task.name} cleanup failed:`, error);
+        logger.error({
+          msg: "Cleanup failed",
+          task: task.name,
+          err: error,
+        });
         throw error;
       }
     })
@@ -112,12 +120,12 @@ async function shutdown(signal: string): Promise<void> {
 
   isShuttingDown = true;
 
-  console.info(`Received ${signal}. Shutting down gracefully...`);
+  logger.info({ msg: "Shutting down gracefully", signal });
 
   await cleanup();
 
   if (process.exitCode !== 1) {
-    console.info("Customer service shut down successfully.");
+    logger.info("Customer service shut down successfully");
   }
 }
 
@@ -130,7 +138,10 @@ process.on("SIGTERM", () => {
 });
 
 startServer().catch(async (error: unknown) => {
-  console.error("Failed to start Customer service:", error);
+  logger.fatal({
+    msg: "Failed to start Customer service",
+    err: error,
+  });
 
   isShuttingDown = true;
 

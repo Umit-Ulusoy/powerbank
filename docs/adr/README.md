@@ -16,6 +16,9 @@ ADRs provide a historical record of why architectural decisions were made and he
 | [002](002-technology-stack.md) | Technology Stack Selection | Accepted | 2026-10-30 |
 | [003](003-database-per-service.md) | Database Per Service Pattern | Accepted | 2026-10-30 |
 | [004](004-graceful-shutdown.md) | Graceful Shutdown Strategy | Accepted | 2026-10-30 |
+| [005](005-rabbitmq.md) | Use RabbitMQ for Asynchronous Inter-Service Communication | Accepted | 2026-11-04 |
+| [006](006-correlation-id-propagation.md) | Correlation ID Propagation and Validation | Accepted | 2026-11-04 |
+| [007](007-structured-logging.md) | Structured Logging with Pino | Accepted | 2026-11-05 |
 
 ## Process
 

@@ -3,9 +3,16 @@ import express, {
   type ErrorRequestHandler,
 } from "express";
 
+import { logger } from "./lib/logger.js";
+import { correlationIdMiddleware } from "./middlewares/correlation-id.js";
+import { requestLoggerMiddleware } from "./middlewares/request-logger.js";
+
 const app = express();
 
 app.disable("x-powered-by");
+
+app.use(correlationIdMiddleware);
+app.use(requestLoggerMiddleware);
 
 app.use(express.json({ limit: "1mb" }));
 
@@ -43,7 +50,10 @@ const errorHandler: ErrorRequestHandler = (
     return next(error);
   }
 
-  console.error("Unhandled request error:", error);
+  logger.error({
+    msg: "Unhandled request error",
+    err: error,
+  });
 
   res.status(500).json({
     success: false,
